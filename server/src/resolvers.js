@@ -3,8 +3,20 @@ const moment = require('moment')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { User, Family } = require('./models')
+const { getUserId } = require('./utils')
 
 const JWT_SECRET = process.env.JWT_SECRET
+
+const nodeMailer = require('nodemailer')
+const { welcomeEmail } = require('./emails')
+
+const transporter = nodeMailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.FROM_EMAIL,
+    pass: process.env.GMAIL_PASSWORD
+  }
+})
 
 function randomChoice(arr) {
   return arr[Math.floor(arr.length * Math.random())]
@@ -17,8 +29,10 @@ const avatarColors = [
 
 const resolvers = {
   Query: {
-   test (_, args, context) {
-      return 'Hello World!'
+    async getFamily (_, args, context) {
+      const userId = getUserId(context)
+      const user = await User.findById(userId)
+      return await Family.findById(user.family)
     }
   },
   Mutation: {
@@ -32,6 +46,7 @@ const resolvers = {
         role: 'Owner',
         status: 'Pending'
       })
+      transporter.sendMail(welcomeEmail(email, user))
       return user
     },
     async signup (_, {id, firstname, lastname, password}) {

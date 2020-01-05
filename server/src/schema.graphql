@@ -1,7 +1,12 @@
 scalar Date
 
 type Query {
- test: String
+  getFamily: Family
+}
+
+type Family {
+  id: String
+  name: String
 }
 
 type Mutation {
