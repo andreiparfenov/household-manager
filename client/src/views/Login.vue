@@ -59,7 +59,7 @@ export default {
           const id = login.user.id
           const token = login.token
           this.saveUserData(id, token)
-          this.$router.push({name: 'workspace'})
+          this.$router.push({name: 'dashboard'})
         }).catch((error) => {
           this.error = 'Invalid email or password'
           console.log(error)

@@ -2,7 +2,7 @@ const { GraphQLScalarType } = require('graphql')
 const moment = require('moment')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { User, Family } = require('./models')
+const { User, Family, Folder } = require('./models')
 const { getUserId } = require('./utils')
 
 const JWT_SECRET = process.env.JWT_SECRET
@@ -33,7 +33,28 @@ const resolvers = {
       const userId = getUserId(context)
       const user = await User.findById(userId)
       return await Family.findById(user.family)
-    }
+    },
+    /*
+    async getFolders (_, {parent}, context) {
+      const userId = getUserId(context)
+      if (parent) {
+        return await Folder.find({parent})
+      } else {
+        const user = await User.findById(userId)
+        const groups = await Group.find({users: ObjectId(userId)}, '_id')
+        const ids = groups.map(o => o._id).concat(
+          ['External User', 'Collaborator'].includes(user.role)
+          ? [ObjectId(userId)]
+          : [ObjectId(userId), user.family]
+        )
+        return await Folder.find({ 'shareWith.item': ids }).populate('shareWith')
+      }
+    },
+    async getFolder (_, {id}, context) {
+      const userId = getUserId(context)
+      return await Folder.findById(id).populate('shareWith')
+    },
+    */
   },
   Mutation: {
     async captureEmail (_, {email}) {
@@ -45,6 +66,16 @@ const resolvers = {
         email,
         role: 'Owner',
         status: 'Pending'
+      })
+      transporter.sendMail(welcomeEmail(email, user))
+      return user
+    },
+    async inviteMember (_, {email, familyId}) {
+      const user = await User.create({
+        email,
+        role: 'Member',
+        status: 'Pending',
+        family: familyId
       })
       transporter.sendMail(welcomeEmail(email, user))
       return user
@@ -61,12 +92,13 @@ const resolvers = {
       }
       if (user.role === 'Owner') {
         const family = await Family.create({
-          name: `${common.name}'s family`
+          familyName: common.lastname,
+          members: [user.id]
         })
         user.set({
           ...common,
           family: family.id,
-          jobTitle: 'CEO/Owner/Founder'
+          jobTitle: ''
         })
       } else {
         user.set(common)

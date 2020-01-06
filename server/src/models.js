@@ -6,7 +6,7 @@ const ObjectId = Schema.Types.ObjectId
 function buildModel(name, schema) {
   return mongoose.model(name, new Schema(schema, {timestamps: true}))
 }
-
+/*
 const Folder = buildModel('Folder', {
   name: String,
   description: String,
@@ -21,7 +21,7 @@ module.exports.Folder = Folder
 
 module.exports.Family = Folder.discriminator('Family', new Schema({
 }, {timestamps: true}))
-
+*/
 module.exports.User = buildModel('User', {
   name: {
     type: String,
@@ -45,3 +45,20 @@ module.exports.User = buildModel('User', {
   role: String,
   status: String
 })
+
+module.exports.Family = buildModel('Family', {
+  familyName: {
+    type: String
+  },
+  members: [{ type: ObjectId, ref: 'User' }]
+})
+
+/*
+module.exports.Group = buildModel('Group', {
+  family: { type: ObjectId, ref: 'Family' },
+  name: String,
+  initials: String,
+  avatarColor: String,
+  users: [{ type: ObjectId, ref: 'User' }],
+})
+*/

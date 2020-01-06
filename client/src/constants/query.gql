@@ -5,6 +5,13 @@ mutation CaptureEmail($email: String!) {
   }
 }
 
+mutation InviteMember($email: String!, $familyId: String!) {
+  inviteMember(email: $email, familyId: $familyId) {
+    id
+    email
+  }
+}
+
 mutation Signup($id: String!, $firstname: String!, $lastname: String!, $password: String!) {
   signup(id: $id, firstname: $firstname, lastname: $lastname, password: $password) {
     token
@@ -28,6 +35,23 @@ mutation Login($email: String!, $password: String!) {
 query GetFamily {
   getFamily {
     id
-    name
+    familyName
+    members
   }
 }
+
+#fragment FolderFields on Folder {
+#  id
+#  name
+#  parent
+#  description
+#  shareWith
+#}
+
+#query GetFolders($parent: String) {
+#  getFolders(parent: $parent) { ...FolderFields }
+#}
+
+#query GetFolder($id: String!) {
+#  getFolder(id: $id) { ...FolderFields }
+#}

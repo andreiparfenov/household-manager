@@ -65,7 +65,7 @@ export default {
         const id = signup.user.id
         const token = signup.token
         this.saveUserData(id, token)
-        this.$router.push({name: 'workspace'})
+        this.$router.push({name: 'dashboard'})
       }).catch((error) => {
         this.error = 'Something went wrong'
         console.log(error)

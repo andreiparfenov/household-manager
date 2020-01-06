@@ -1,16 +1,29 @@
 scalar Date
+scalar JSON
 
 type Query {
   getFamily: Family
+  #getFolders(parent: String): [Folder]
+  #getFolder(id: String!): Folder
 }
+
+#type Folder {
+#  id: String
+#  name: String
+#  parent: String
+#  description: String
+#  shareWith: [JSON]
+#}
 
 type Family {
   id: String
-  name: String
+  familyName: String
+  members: [String]
 }
 
 type Mutation {
   captureEmail(email: String!): User
+  inviteMember(email: String!, familyId: String!): User
   signup(id: String!, firstname: String!, lastname: String!, password: String!): AuthPayload!
   login(email: String!, password: String!): AuthPayload!
 }
