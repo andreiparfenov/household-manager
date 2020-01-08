@@ -18,7 +18,7 @@ type Query {
 type Family {
   id: String
   familyName: String
-  members: [String]
+  members: [JSON]
 }
 
 type Mutation {

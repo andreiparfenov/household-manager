@@ -32,7 +32,7 @@ const resolvers = {
     async getFamily (_, args, context) {
       const userId = getUserId(context)
       const user = await User.findById(userId)
-      return await Family.findById(user.family)
+      return await Family.findById(user.family).populate('members');
     },
     /*
     async getFolders (_, {parent}, context) {
@@ -70,6 +70,7 @@ const resolvers = {
       transporter.sendMail(welcomeEmail(email, user))
       return user
     },
+
     async inviteMember (_, {email, familyId}) {
       const user = await User.create({
         email,
@@ -77,9 +78,16 @@ const resolvers = {
         status: 'Pending',
         family: familyId
       })
+      //add new member to household
+      Family.findById(familyId, function (err, fam) {
+        if (err) { console.log(err) };
+        fam.members.push(user.id);
+        fam.save();
+      })
       transporter.sendMail(welcomeEmail(email, user))
       return user
     },
+    
     async signup (_, {id, firstname, lastname, password}) {
       const user = await User.findById(id)
       const common = {
@@ -107,6 +115,7 @@ const resolvers = {
       const token = jwt.sign({id: user.id, email: user.email}, JWT_SECRET)
       return {token, user}
     },
+
     async login (_, {email, password}) {
       const user = await User.findOne({email})
       if (!user) {
@@ -118,7 +127,19 @@ const resolvers = {
       }
       const token = jwt.sign({id: user.id, email}, JWT_SECRET)
       return {token, user}
+    },
+    /*
+    async getHHMembers (_, {familyId}) {
+      const family = await Family.findById(familyId).populate('members');
+      return family.members
+      /*
+      const family = await Family.findById(familyId, function (err, fam) {
+        if (err) { console.log(err) };
+        return fam
+      })
+      User.populate(family, { path: 'members', model: 'User'})
     }
+    */
   },
   Date: new GraphQLScalarType({
     name: 'Date',
