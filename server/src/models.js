@@ -53,6 +53,14 @@ module.exports.Family = buildModel('Family', {
   members: [{ type: ObjectId, ref: 'User' }]
 })
 
+module.exports.Message = buildModel('Message', {
+  content: {
+    type: String,
+  },
+  author: {type: ObjectId, ref: 'User'},
+  chat: {type: ObjectId, ref: 'Family'}
+})
+
 /*
 module.exports.Group = buildModel('Group', {
   family: { type: ObjectId, ref: 'Family' },

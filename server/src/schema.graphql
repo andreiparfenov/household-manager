@@ -46,3 +46,10 @@ type AuthPayload {
   token: String!
   user: User!
 }
+
+type Message {
+  id: String
+  content: String
+  author: String
+  createdAt: String
+}

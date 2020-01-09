@@ -2,7 +2,7 @@ const { GraphQLScalarType } = require('graphql')
 const moment = require('moment')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { User, Family, Folder } = require('./models')
+const { User, Family, Message } = require('./models')
 const { getUserId } = require('./utils')
 
 const JWT_SECRET = process.env.JWT_SECRET
@@ -30,10 +30,15 @@ const avatarColors = [
 const resolvers = {
   Query: {
     async getFamily (_, args, context) {
-      const userId = getUserId(context)
-      const user = await User.findById(userId)
+      const userId = getUserId(context);
+      const user = await User.findById(userId);
       return await Family.findById(user.family).populate('members');
     },
+    async getMessages(_, args, context) {
+      const userId = getUserId(context);
+      const user = await User.findById(userId);
+      return await Message.find({ chat: user.family }).populate('author');
+    }
     /*
     async getFolders (_, {parent}, context) {
       const userId = getUserId(context)
