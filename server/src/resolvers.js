@@ -34,10 +34,15 @@ const resolvers = {
       const user = await User.findById(userId);
       return await Family.findById(user.family).populate('members');
     },
-    async getMessages(_, args, context) {
+
+    async getMessages (_, args, context) {
       const userId = getUserId(context);
       const user = await User.findById(userId);
-      return await Message.find({ chat: user.family }).populate('author');
+      const family = await Family.findById(user.family).populate({
+        path: 'messages', model: 'Message',
+        populate: { path: 'author', model: 'User'}
+      })
+      return await family.messages
     }
     /*
     async getFolders (_, {parent}, context) {
@@ -133,18 +138,24 @@ const resolvers = {
       const token = jwt.sign({id: user.id, email}, JWT_SECRET)
       return {token, user}
     },
-    /*
-    async getHHMembers (_, {familyId}) {
-      const family = await Family.findById(familyId).populate('members');
-      return family.members
-      /*
-      const family = await Family.findById(familyId, function (err, fam) {
-        if (err) { console.log(err) };
-        return fam
+    
+    async createMessage (_, {content}, context) {
+      const userId = getUserId(context);
+      const user = await User.findById(userId);
+      const familyId = user.family;
+      const message = await Message.create({
+        content,
+        author: userId,
+        chat: familyId
       })
-      User.populate(family, { path: 'members', model: 'User'})
+      //add message to family chat
+      Family.findById(familyId, function (err, fam) {
+        if (err) { console.log(err) };
+        fam.messages.push(message.id);
+        fam.save();
+      })
+      return message
     }
-    */
   },
   Date: new GraphQLScalarType({
     name: 'Date',

@@ -4,9 +4,8 @@ import Home from '../views/Home.vue'
 import Signup from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import Workspace from '../views/Workspace.vue'
-import Folder from '../views/Folder.vue'
-import FolderDetail from '../views/FolderDetail.vue'
 import Dashboard from '../views/Dashboard.vue'
+import Chat from '../views/Chat.vue'
 
 Vue.use(VueRouter)
 
@@ -15,7 +14,7 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home,
-    meta: { title: 'Household Manager' }
+    meta: { title: 'Household Manager', redirect: true }
   },
   {
     path: '/signup/:id',
@@ -27,7 +26,7 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login,
-    meta: { title: 'Login - Household Manager' }
+    meta: { title: 'Login - Household Manager', redirect: true }
   },
   {
     path: '/dashboard',
@@ -36,30 +35,10 @@ const routes = [
     meta: { title: 'My Household', requiresAuth: true}
   },
   {
-    path: '/w',
-    name: 'workspace',
-    component: Workspace,
-    meta: { title: 'Workspace - Household Manager', requiresAuth: true },
-    children: [
-      {
-        path: 'folder/:id',
-        component: Folder,
-        props: true,
-        children: [
-          {
-            path: '',
-            name: 'folder',
-            component: FolderDetail
-          },
-          //{
-            //path: 'task/:taskId',
-            //name: 'task',
-            //component: Task,
-            //props: true
-          //}
-        ]
-      }
-    ]
+    path: '/chat',
+    name: 'chat',
+    component: Chat,
+    meta: { title: 'Household Board', requiresAuth: true}
   }
 ]
 

@@ -3,6 +3,7 @@ scalar JSON
 
 type Query {
   getFamily: Family
+  getMessages: [Message]
   #getFolders(parent: String): [Folder]
   #getFolder(id: String!): Folder
 }
@@ -21,11 +22,19 @@ type Family {
   members: [JSON]
 }
 
+type Message {
+  id: String
+  content: String
+  author: JSON
+  createdAt: String
+}
+
 type Mutation {
   captureEmail(email: String!): User
   inviteMember(email: String!, familyId: String!): User
   signup(id: String!, firstname: String!, lastname: String!, password: String!): AuthPayload!
   login(email: String!, password: String!): AuthPayload!
+  createMessage(content: String!): Message
 }
 
 type User {
@@ -45,11 +54,4 @@ type User {
 type AuthPayload {
   token: String!
   user: User!
-}
-
-type Message {
-  id: String
-  content: String
-  author: String
-  createdAt: String
 }

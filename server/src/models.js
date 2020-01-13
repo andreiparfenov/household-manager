@@ -50,7 +50,8 @@ module.exports.Family = buildModel('Family', {
   familyName: {
     type: String
   },
-  members: [{ type: ObjectId, ref: 'User' }]
+  members: [{ type: ObjectId, ref: 'User' }],
+  messages: [{ type: ObjectId, ref: 'Message' }]
 })
 
 module.exports.Message = buildModel('Message', {

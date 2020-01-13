@@ -32,11 +32,27 @@ mutation Login($email: String!, $password: String!) {
   }
 }
 
+mutation CreateMessage($content: String!) {
+  createMessage(content: $content) {
+    id
+    content
+  }
+}
+
 query GetFamily {
   getFamily {
     id
     familyName
     members
+  }
+}
+
+query GetMessages {
+  getMessages {
+    id
+    content
+    author
+    createdAt
   }
 }
 

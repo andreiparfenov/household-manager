@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { GetFamily, InviteMember } from '../constants/query.gql'
+import { GetFamily } from '../constants/query.gql'
 import ModalInvite from '../components/ModalInvite'
 
 export default {

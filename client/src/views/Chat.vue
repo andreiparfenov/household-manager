@@ -1,14 +1,25 @@
 <template>
   <div class="container">
     <div class="space">
-      
+      {{getMessages}}
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import { GetMessages } from '../constants/query.gql'
 
+export default {
+  data() {
+    return {
+      getMessages: []
+    }
+  },
+  apollo: {
+    getMessages: {
+      query: GetMessages
+    }
+  }
 }
 </script>
 
